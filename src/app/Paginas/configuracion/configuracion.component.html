@@ -1,0 +1,144 @@
+<div class="flex justify-center items-start min-h-[80vh] pt-8 bg-gradient-to-tr from-blue-950 via-purple-950 to-black px-4 text-white">
+  <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Cuadro izquierdo: Datos del perfil -->
+    <div class="bg-white/10 backdrop-blur p-6 rounded-2xl shadow-2xl border border-white/20 text-white">
+      <h2 class="text-xl font-bold mb-4 text-center">Datos del perfil</h2>
+      <div class="space-y-4">
+        <!-- Nombre -->
+        <div>
+          <label class="font-semibold">Nombre</label>
+          <input
+            *ngIf="modoEdicion"
+            [(ngModel)]="usuario.first_name"
+            type="text"
+            class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+            />
+          <p *ngIf="!modoEdicion">{{ usuario?.first_name }}</p>
+        </div>
+
+        <!-- Apellido -->
+        <div>
+          <label class="font-semibold">Apellido</label>
+          <input
+            *ngIf="modoEdicion"
+            [(ngModel)]="usuario.last_name"
+            type="text"
+            class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+          />
+          <p *ngIf="!modoEdicion">{{ usuario?.last_name }}</p>
+        </div>
+
+        <!-- Correo -->
+        <div>
+          <label class="font-semibold">Correo</label>
+          <input
+            *ngIf="modoEdicion"
+            [(ngModel)]="usuario.email"
+            type="email"
+            class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+          />
+          <p *ngIf="!modoEdicion">{{ usuario?.email }}</p>
+        </div>
+
+        <!-- Rol -->
+        <div>
+          <label class="font-semibold">Rol</label>
+          <p class="font-medium">{{ usuario?.role }}</p>
+        </div>
+
+        <!-- Botones edición -->
+        <div class="flex gap-2">
+          <button
+            *ngIf="!modoEdicion"
+            pButton
+            label="Editar"
+            icon="pi pi-pencil"
+            class="p-button-sm bg-purple-600 text-white hover:bg-purple-700 transition-all"
+            (click)="modoEdicion = true"
+          ></button>
+
+          <ng-container *ngIf="modoEdicion">
+            <button
+              pButton
+              label="Aplicar cambios"
+              icon="pi pi-check"
+              class="p-button-sm p-button-success"
+              (click)="guardarCambios()"
+            ></button>
+            <button
+              pButton
+              label="Cancelar"
+              icon="pi pi-times"
+              class="p-button-sm p-button-danger"
+              (click)="cancelarEdicion()"
+            ></button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cuadro derecho: Cambiar contraseña -->
+    <div class="bg-white/10 backdrop-blur p-6 rounded-2xl shadow-2xl border border-white/20 text-white">
+      <h2 class="text-xl font-bold mb-4 text-center">Seguridad</h2>
+      <div class="space-y-4">
+
+        <button
+          *ngIf="!mostrarCambioPassword"
+          pButton
+          label="Cambiar contraseña"
+          icon="pi pi-key"
+          class="p-button-sm w-full bg-purple-600 text-white hover:bg-purple-700 transition-all"
+          (click)="mostrarCambioPassword = true"
+        ></button>
+
+        <div *ngIf="mostrarCambioPassword" class="space-y-4">
+          <div>
+            <label class="font-semibold">Contraseña actual</label>
+            <input
+              [(ngModel)]="cambioPassword.actual"
+              type="password"
+              class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+              />
+          </div>
+
+          <div>
+            <label class="font-semibold">Nueva contraseña</label>
+            <input
+              [(ngModel)]="cambioPassword.nueva"
+              type="password"
+              class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+              />
+          </div>
+
+          <div>
+            <label class="font-semibold">Confirmar nueva contraseña</label>
+            <input
+              [(ngModel)]="cambioPassword.confirmar"
+              type="password"
+              class="p-inputtext p-component p-2 w-full bg-white/10 text-white placeholder-white/60 border border-purple-500 focus:ring-2 focus:ring-purple-300 transition rounded-lg"
+              />
+          </div>
+
+          <div class="flex gap-2">
+            <button
+              pButton
+              label="Guardar"
+              icon="pi pi-save"
+              class="p-button-sm p-button-success w-full"
+              (click)="guardarNuevaPassword()"
+            ></button>
+            <button
+              pButton
+              label="Cancelar"
+              icon="pi pi-times"
+              class="p-button-sm p-button-danger w-full"
+              (click)="cancelarCambioPassword()"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

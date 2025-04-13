@@ -1,0 +1,43 @@
+# 📦 Node modules
+/node_modules/
+
+# 🛠️ Angular build outputs
+/dist/
+/out-tsc/
+/.angular/cache
+
+# 🔥 Temporal files
+/tmp
+/bazel-out
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+/testem.log
+
+# 🧠 IDEs and editors
+.vscode/
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# ✅ Excepciones de VS Code (si realmente las usás)
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# 💻 OS files
+.DS_Store
+Thumbs.db
+
+# 🧪 Environment files (Angular)
+src/environments/environments.ts
+src/environments/environments.prod.ts
+
+# 🕘 VS Code history plugin (si lo usás)
+.history/
