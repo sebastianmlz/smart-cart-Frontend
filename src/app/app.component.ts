@@ -18,5 +18,5 @@ export class AppComponent {
   title = 'Proyecto-Frontend';// Añadido para usar el servicio de autenticación
   visible=false;
   constructor(public authService: AuthService) {}
-  
+    hola: string = 'Hola mundo';
 }
