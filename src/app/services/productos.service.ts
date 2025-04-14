@@ -15,7 +15,7 @@ import { CreateProduct } from '../models/create-product.model';
 
 export class ProductosService {
 
-  baseUrl = environment.apiURLP + '/products/';
+  baseUrl = environment.apiUrl + '/products/';
 
   constructor(private http: HttpClient) { }
 

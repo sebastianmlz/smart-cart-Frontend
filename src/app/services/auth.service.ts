@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
 
-  private baseUrlP = environment.apiURLP + '/auth';
+  private baseUrlP = environment.apiUrl + '/auth';
   private currentUserSubject = new BehaviorSubject<any>(this.getUser());
   public currentUser$ = this.currentUserSubject.asObservable();
 

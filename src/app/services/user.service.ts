@@ -13,7 +13,7 @@ import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 export class UserService {
 
-  baseUrl = environment.apiURLP + '/auth/users/';
+  baseUrl = environment.apiUrl + '/auth/users/';
 
   constructor(private http: HttpClient) { }
 
