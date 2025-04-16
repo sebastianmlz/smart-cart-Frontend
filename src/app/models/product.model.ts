@@ -3,6 +3,7 @@ export interface Product {
     uuid: string;
     name: string;
     description: string;
+    image_url: string;
     technical_specifications: string;
     active: boolean;
     price_usd: string;

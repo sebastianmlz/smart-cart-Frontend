@@ -79,12 +79,15 @@ export class TableUsersComponent {
   cargarUsers(): void {
     this.usuarioService.obtenerUsers().subscribe({
       next: (res) => {
-        this.usuarios = res;
-        console.log("usuarios: ", res);
+        this.usuarios = res.items;  // << aquí está el array correcto
+        console.log("usuarios: ", this.usuarios);
       },
       error: (err) => console.error('Error al cargar los usuarios', err),
     });
   }
+  
+  
+  
 
   // agregarUsuario(newUsuario: User): void {
   //   this.usuarioService.agregarUsers(newUsuario).subscribe({

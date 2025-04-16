@@ -52,6 +52,9 @@ export class TableProductsComponent {
   //variables para obtener y cargar productos
   products: Product[] = [];
   inventarios: Inventory[] = [];
+  productosCompletos: ProductWithInventory[] = [];
+
+
   // productosCompletos: ProductWithInventory[] = [];
   productoEditable: any = {};
   editarProductoModalVisible = false;
@@ -65,7 +68,7 @@ export class TableProductsComponent {
   nuevoProducto: CreateProduct = {
     brand_id: 0,
     category_id: 0,
-    warranty_id: 0,
+    // warranty_id: 0,
     name: '',
     description: '',
     active: true,
@@ -76,8 +79,7 @@ export class TableProductsComponent {
     stock: 0
   };
   nuevoProductoModalVisible = false;
-  stock: number = 0;
-  price_usd: number = 0;
+
 
 
 
@@ -88,15 +90,17 @@ export class TableProductsComponent {
 
   ngOnInit() {
     // this.cargarDatosCompletos();
-    this.cargarProductos();
+    // this.cargarProductos();
+    // this.cargarInventario();
+    this.cargarDatosCompletos()
     this.cargarFormOpciones();
-    console.log("productos cargados:", this.productos);
+    
   }
 
   cargarProductos() {
     this.productos.obtenerProductos().subscribe({
       next: (res) => {
-        this.products = res;
+        this.products = res.items;
         console.log("productos:", this.products);
       },
       error: (err) => console.error('Error al cargar los productos', err),
@@ -104,7 +108,7 @@ export class TableProductsComponent {
   }
 
   cargarInventario(): void {
-    this.productos.obtenerInventarioCompleto().subscribe({
+    this.productos.getInventarioCompleto().subscribe({
       next: (res) => {
         this.inventarios = res.items;
       },
@@ -113,53 +117,60 @@ export class TableProductsComponent {
   }
 
   cargarDatosCompletos(): void {
-    // this.productos.obtenerProductos().subscribe({
-    //   next: (resProd) => {
-    //     const productos = resProd.items;
-    //     this.products = productos; // ✅ AQUÍ ASIGNAMOS A products
-    
-    //     this.productos.obtenerInventarioCompleto().subscribe({
-    //       next: (resInv) => {
-    //         const inventarios = resInv.items;
-    //         this.productosCompletos = productos.map(producto => {
-    //           const inv = inventarios.find(i => i.product_id === producto.id);
-    
-    //           return {
-    //             id: producto.id,
-    //             name: producto.name,
-    //             active: producto.active,
-    //             image_url: producto.image_url,
-    //             category: producto.category.name || '',
-    //             technical_specifications: producto.technical_specifications || '',
-    //             description: producto.description || '',
-    //             price_usd: inv?.price_usd ?? 0
-    //           };
-    //         });
-    //       },
-    //       error: (err) => console.error("Error al obtener inventario", err),
-    //     });
-    //   },
-    //   error: (err) => console.error("Error al obtener productos", err),
-    // });    
+    this.productos.obtenerProductos().subscribe({
+      next: (resProd) => {
+        const productos = resProd.items;
+        console.log("productos cargados:", resProd.items);
+
+  
+        this.productos.getInventarioCompleto().subscribe({
+          next: (resInv) => {
+            const inventarios = resInv.items;
+            console.log("inventarios: ", resInv.items);
+            this.productosCompletos = productos.map(producto => {
+              const inventario = inventarios.find(i => i.product === producto.id);
+              
+
+            
+              return {
+                id: producto.id,
+                name: producto.name,
+                active: producto.active,
+                image_url: producto.image_url,
+                category: producto.category,
+                technical_specifications: producto.technical_specifications || '',
+                description: producto.description || '',
+                price_usd: producto.price_usd || 0,
+                stock: inventario?.stock || 0
+              } as ProductWithInventory; // 👈 CAST EXPLÍCITO
+            });
+            
+          },
+          error: (err) => console.error("Error al obtener inventario", err),
+        });
+      },
+      error: (err) => console.error("Error al obtener productos", err),
+    });    
   }
+  
 
 
   cargarFormOpciones(): void {
     this.productos.getBrands().subscribe({
       next: (res) =>{
-        console.log("brands: ",res);
-        this.brands = res;
+        console.log("brands: ",res.items);
+        this.brands = res.items;
       } ,
       error: (err) => console.error('Error al cargar brands', err)
     });
 
     this.productos.getCategories().subscribe({
-      next: (res) => this.categories = res,
+      next: (res) => this.categories = res.items,
       error: (err) => console.error('Error al cargar categories', err)
     });
 
     this.productos.getWarranties().subscribe({
-      next: (res) => this.warranties = res,
+      next: (res) => this.warranties = res.items,
       error: (err) => console.error('Error al cargar warranties', err)
     });
   }
@@ -168,7 +179,7 @@ export class TableProductsComponent {
     this.nuevoProducto = {
       brand_id: 0,
       category_id: 0,
-      warranty_id: 0,
+      // warranty_id: 0,
       name: '',
       description: '',
       active: true,
@@ -193,7 +204,7 @@ export class TableProductsComponent {
 
     formData.append('brand', this.nuevoProducto.brand_id.toString());
     formData.append('category', this.nuevoProducto.category_id.toString());
-    formData.append('warranty', this.nuevoProducto.warranty_id.toString());
+    // formData.append('warranty', this.nuevoProducto.warranty_id.toString());
     formData.append('name', this.nuevoProducto.name);
     formData.append('description', this.nuevoProducto.description);
     formData.append('active', this.nuevoProducto.active ? 'true' : 'false');
@@ -205,32 +216,36 @@ export class TableProductsComponent {
 
     this.productos.createProduct(formData).subscribe({
       next: (productoCreado) => {
-        // const product_id = productoCreado.id;
-        // const inventario = {
-        //   product_id,
-        //   stock: this.stock,
-        //   price_usd: this.price_usd
-        // };
+        const product_id = productoCreado.id;
+    
+        setTimeout(() => {
+          const inventario = {
+            product: product_id,
+            stock: this.nuevoProducto.stock
+          };          
+          console.log("Inventario a enviar:", inventario);
 
-        // this.productos.createInventory(inventario).subscribe({
-        //   next: () => {
-        //     this.noti.success('Registro exitoso', 'Producto registrado exitosamente');
-        //     this.nuevoProductoModalVisible = false;
-        //     // Recargar tabla, etc...
-        //     this.cargarDatosCompletos();
-        //   },
-        //   error: (err) => {
-        //     console.error('Error al registrar inventario:', err);
-        //     this.noti.error('No se pudo regitrar producto con inventario', 'Hubo un error al registrar el producto');
-        //   }
-        // });
-        alert('Producto registrado exitosamente');
+
+          this.productos.createInventory(inventario).subscribe({
+            next: (res) => {
+              console.log('Respuesta del backend:', res);
+              this.noti.success('Inventario creado', '¡Todo bien!');
+              this.cargarDatosCompletos();
+            },
+            error: (err) => {
+              console.error('Error al crear inventario', err);
+              this.noti.error('Fallo', 'No se creó el inventario');
+            }
+          });
+          
+        }, 300); // ⏱️ Espera 300ms para asegurar que el producto ya esté listo
       },
       error: (err) => {
         console.error('Error al registrar producto', err);
         this.noti.error('No se pudo regitrar producto', 'Hubo un error al registrar el producto');
       }
     });
+    
   }
 
   eliminarProducto(id: number): void {

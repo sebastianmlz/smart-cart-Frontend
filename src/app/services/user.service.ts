@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
 import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
@@ -23,17 +23,13 @@ export class UserService {
     return this.http.post<User>(this.baseUrl, user, { headers });
   }
 
-  obtenerUsers(): Observable<User[]> {
+  obtenerUsers(): Observable<{ items: User[] }> {
     const token = localStorage.getItem('access');
-    console.log('Token enviado:', token);
-  
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log('Headers:', headers);
-  
-    return this.http.get<User[]>(`${this.baseUrl}`, { headers });
+    return this.http.get<{ items: User[] }>(`${this.baseUrl}`, { headers });
   }
   
-
+  
   actualizarUser(id: number, user: Partial<User>): Observable<User> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -44,8 +40,13 @@ export class UserService {
   eliminarUsuario(id: number): Observable<any> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.baseUrl}${id}`, { headers });
+    
+    return this.http.delete(`${this.baseUrl}${id}/`, {
+      headers: headers,
+      observe: 'response'  // ⚠️ esto fuerza a enviar bien los headers
+    });
   }
+  
 
   
 }

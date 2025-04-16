@@ -3,8 +3,9 @@ export interface ProductWithInventory {
     name: string;
     active: boolean;
     image_url: string;
-    category: string;
+    category: number; // ← cambio aquí
     technical_specifications: string;
     description: string;
     price_usd: number;
+    stock: number;
 }

@@ -17,7 +17,7 @@
   </div>
 
   <p-table 
-    [value]="products" 
+    [value]="productosCompletos" 
     [rows]="10" 
     [paginator]="true" 
     [rowHover]="true" 
@@ -91,10 +91,10 @@
         <label>Categoría</label>
         <p-dropdown [options]="categories" [(ngModel)]="nuevoProducto.category_id" name="category_id" optionLabel="name" optionValue="id" placeholder="Seleccione una categoría" class="w-full border border-purple-300 rounded-lg" />
       </div>
-      <div class="space-y-1">
+      <!-- <div class="space-y-1">
         <label>Garantía</label>
         <p-dropdown [options]="warranties" [(ngModel)]="nuevoProducto.warranty_id" name="warranty_id" optionLabel="name" optionValue="id" placeholder="Seleccione una garantía" class="w-full border border-purple-300 rounded-lg" />
-      </div>
+      </div> -->
       <div class="space-y-1">
         <label>Imagen</label>
         <input type="file" accept="image/*" (change)="onFileSelected($event)" class="w-full" />
