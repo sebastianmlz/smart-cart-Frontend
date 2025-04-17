@@ -66,11 +66,11 @@ export class ProductosService {
   
 
 
-  getInventarioCompleto(): Observable<PaginatedResponse<Inventory>> {
-    const token = localStorage.getItem('access');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<PaginatedResponse<Inventory>>(`${this.baseUrl}inventory`, { headers });
-  }
+  // getInventarioCompleto(): Observable<PaginatedResponse<Inventory>> {
+  //   const token = localStorage.getItem('access');
+  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  //   return this.http.get<PaginatedResponse<Inventory>>(`${this.baseUrl}inventory`, { headers });
+  // }
 
 
   getBrands(): Observable<PaginatedResponse<Brand>> {
@@ -88,7 +88,7 @@ export class ProductosService {
   getWarranties(): Observable<PaginatedResponse<Warranty>> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<PaginatedResponse<Warranty>>(`${this.baseUrl}warranty/`, { headers });
+    return this.http.get<PaginatedResponse<Warranty>>(`${this.baseUrl}warranties/`, { headers });
   }
 
 

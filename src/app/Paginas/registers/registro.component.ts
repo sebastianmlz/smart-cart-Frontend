@@ -23,10 +23,13 @@ export class RegistroComponent {
     email: '',
     first_name: '',
     last_name: '',
-    role: '',
-    active: true,
     password: '',
+    role: 'customer',       // Por defecto si siempre será cliente
+    active: true,
+    is_staff: true,
+    is_superuser: false
   };
+  
   
   //variable de roles
   roles = [
@@ -45,16 +48,14 @@ export class RegistroComponent {
     if (form.invalid) {
       return; // 👈 Salir si el formulario no es válido
     }
-  
+    console.log("datos a registrar: ",this.usuario);
     this.authService.registrarse(this.usuario).subscribe({
       next: () => {
-        this.noti.success('¡Registro completo!', 'Ahora podés iniciar sesión');
-        alert('✅ Registro exitoso');
+        this.noti.success('¡Registro exitoso!', 'Ya puedes iniciar sesión');
         this.router.navigate(['/ingreso']);
       },
       error: (err) => {
         this.noti.error('Error', 'No se pudo registrar');
-        alert('No se pudo registrar');
       }
     });
   }

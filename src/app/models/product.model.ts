@@ -1,14 +1,20 @@
+import { Brand } from "./brand.model";
+import { Category } from "./category.model";
+import { Inventory } from "./inventario.model";
+import { Warranty } from "./warranty.model";
+
 export interface Product {
     id: number;
-    uuid: string;
     name: string;
-    description: string;
-    image_url: string;
-    technical_specifications: string;
     active: boolean;
-    price_usd: string;
-    price_bs: string;
+    image_url: string;
+    category: Category;
+    brand: Brand;
+    warranty: Warranty; // Nuevo
+    inventory: Inventory; // Nuevo
+    stock: number;      // Nuevo
+    technical_specifications: string;
+    description: string;
+    price_usd: number;
     created_at: string;
-    brand: number;      // Cambiado de objeto a número
-    category: number;   // Cambiado de objeto a número
 }

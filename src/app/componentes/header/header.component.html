@@ -3,7 +3,7 @@
       <ng-template pTemplate="start">
         <div class="flex items-center gap-4">
           <!-- Botones para Admin -->
-          <ng-container *ngIf="authService.isAdmin() && authService.isLoggedIn()">
+          <ng-container *ngIf=" authService.isLoggedIn()">
             <p-button
               routerLink="/home"
               label="Smart Cart"
@@ -13,7 +13,7 @@
             <p-button
               routerLink="/productos"
               label="Productos"
-              styleClass="bg-transparent text-white font-medium hover:text-purple-300 border-none"
+              styleClass="bg-transparent text-purple-600 font-medium hover:text-purple-300 border-none"
             ></p-button>
   
             <!-- Si activás contactanos, queda igual -->

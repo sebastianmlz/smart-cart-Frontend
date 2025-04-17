@@ -46,6 +46,14 @@ export class UserService {
       observe: 'response'  // ⚠️ esto fuerza a enviar bien los headers
     });
   }
+
+  changePassword(data: { old_password: string, new_password: string }): Observable<any> {
+    const token = localStorage.getItem('access');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.baseUrl}change-password/`, data, { headers });
+  }
+  
+  
   
 
   

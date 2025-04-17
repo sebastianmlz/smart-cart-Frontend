@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // ⬅️ Esto es clave
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -29,9 +29,8 @@ export class ConfiguracionComponent implements OnInit {
   private baseUrl = environment.apiUrl;
 
   cambioPassword = {
-    actual: '',
-    nueva: '',
-    confirmar: ''
+    oldPassword : '',
+    newPassword : ''
   };
 
   constructor(
@@ -42,45 +41,59 @@ export class ConfiguracionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.usuario = this.authService.getUser();
+    this.usuario = this.authService.getUser();
   }
 
-  guardarCambios() {
-    const userId = this.usuario?.id; // Asegúrate de tener el id del usuario
-    this.http.put(`${this.baseUrl}/update/${userId}`, this.usuario).subscribe({
+  guardarDatos(): void {
+    const id = this.usuario.id;
+  
+    // Crear objeto con los campos actualizables
+    const updatedUser = {
+      email: this.usuario.email,
+      first_name: this.usuario.first_name,
+      last_name: this.usuario.last_name,
+      role: this.usuario.role,
+      is_staff: this.usuario.is_staff,
+      is_superuser: this.usuario.is_superuser
+    };
+  
+    this.userService.actualizarUser(id, updatedUser).subscribe({
       next: () => {
-        this.noti.success('Datos Actualizados', 'Actualizacion de datos correctamente');
-        localStorage.setItem('user', JSON.stringify(this.usuario)); // actualiza localmente
+        this.noti.success('Datos actualizados', '¡Actualización correcta!');
+        localStorage.setItem('user', JSON.stringify(this.usuario)); // actualizar localStorage
         this.modoEdicion = false;
       },
       error: (err) => {
-        console.error(err);
-        alert('Error al actualizar los datos');
+        console.error('Error al actualizar usuario', err);
+        this.noti.error('Error', 'No se pudo actualizar el usuario');
       }
     });
   }
+  
 
-  guardarNuevaPassword() {
-    const datos = {
-      old_password: this.cambioPassword.actual,
-      new_password: this.cambioPassword.nueva,
-      confirm_password: this.cambioPassword.confirmar
+  cambiarPassword(form: NgForm): void {
+    if (form.invalid) return;
+  
+    const data = {
+      old_password: this.cambioPassword.oldPassword,
+      new_password: this.cambioPassword.newPassword,
     };
-    const token = localStorage.getItem('access_token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http.post(`${this.baseUrl}/auth/change-password`, datos, { headers }).subscribe({
+  
+    this.userService.changePassword(data).subscribe({
       next: () => {
-        this.noti.success('Actualizada', 'Contraseña correctamente actualizada');
-        this.cambioPassword = { actual: '', nueva: '', confirmar: '' };
+        this.noti.success('Contraseña actualizada', 'Tu contraseña fue cambiada exitosamente');
+        form.resetForm();
         this.mostrarCambioPassword = false;
+
       },
       error: (err) => {
-        console.error(err);
-        alert('No se pudo cambiar la contraseña');
+        console.error('Error al cambiar contraseña:', err);
+        this.noti.error('Error', 'No se pudo cambiar la contraseña');
       }
     });
   }
+  
+  
 
   cancelarEdicion() {
     this.modoEdicion = false;
@@ -90,7 +103,7 @@ export class ConfiguracionComponent implements OnInit {
 
   cancelarCambioPassword() {
     this.mostrarCambioPassword = false;
-    this.cambioPassword = { actual: '', nueva: '', confirmar: '' };
+    this.cambioPassword = { oldPassword: '', newPassword: '' };
     this.noti.warn('Cancelado', 'Cambio de contraseña cancelado');
   }
 }

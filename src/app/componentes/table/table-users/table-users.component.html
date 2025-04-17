@@ -65,7 +65,7 @@
     </p-table>
     
     <!-- Modal edicion -->
-    <p-dialog [(visible)]="editarModalVisible" [modal]="true" [style]="{width: '500px'}" header="Editar Usuario" [closable]="false">
+    <p-dialog [(visible)]="editarModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" header="Editar Usuario" [dismissableMask]="true">
       <div class="bg-white p-4 rounded-xl shadow space-y-4">
         <div class="space-y-1">
           <label class="block text-sm font-medium text-gray-700">Nombre</label>
@@ -126,7 +126,7 @@
     
 
     <!-- modal registrar -->
-    <p-dialog [(visible)]="nuevoUsuarioModalVisible" [modal]="true" [style]="{ width: '500px' }" header="Nuevo Usuario" [closable]="false">
+    <p-dialog [(visible)]="nuevoUsuarioModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" header="Nuevo Usuario" [dismissableMask]="true" >
       <div class="bg-white p-4 rounded-xl shadow space-y-4">
         <div class="space-y-1">
           <label class="block text-sm font-medium text-gray-700">Nombre</label>

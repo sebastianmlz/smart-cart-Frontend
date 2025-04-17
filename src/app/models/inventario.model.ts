@@ -1,5 +1,5 @@
 export interface Inventory {
-    id: number;
+    id?: number;
     product: number;  // 🔁 este es el ID del producto relacionado
     stock: number;
     created_at?: string;

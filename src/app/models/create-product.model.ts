@@ -1,7 +1,7 @@
 export interface CreateProduct {
     brand_id: number;
     category_id: number;
-    // warranty_id: number;
+    warranty_id: number;
     name: string;
     description: string;
     active: boolean;

@@ -27,16 +27,12 @@ export class AuthService {
   
   
 
-  registrarse(datos: {
-    email: string;
-    first_name: string;
-    last_name: string;
-    role: string;
-    active: boolean;
-    password: string;
-  }): Observable<any> {
-    return this.http.post(`${this.baseUrlP}/users/`, datos);
+  registrarse(datos: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post(`${this.baseUrlP}/users/`, datos, { headers });
   }
+  
+  
 
   agregarUsers(user: {
     email: string;

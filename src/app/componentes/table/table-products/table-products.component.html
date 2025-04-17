@@ -17,7 +17,7 @@
   </div>
 
   <p-table 
-    [value]="productosCompletos" 
+    [value]="products" 
     [rows]="10" 
     [paginator]="true" 
     [rowHover]="true" 
@@ -55,8 +55,8 @@
             [severity]="product.active ? 'success' : 'danger'" 
           />
         </td>
-        <td>{{ product.category }}</td>
-        <td>{{ product.stock }}</td>
+        <td>{{ product.category.name }}</td>
+        <td>{{ product.inventory.stock }}</td>
         <td>
           <img [src]="product.image_url" alt="Imagen" width="60" height="60" style="border-radius: 0.5rem" />
         </td>
@@ -69,7 +69,7 @@
   </p-table>
 
   <!-- modal de registrar producto -->
-  <p-dialog header="Registrar producto" [(visible)]="nuevoProductoModalVisible" [modal]="true" [style]="{width: '40vw'}">
+  <p-dialog header="Registrar producto" [(visible)]="nuevoProductoModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" [dismissableMask]="true">
     <form class="grid gap-4 bg-white p-4 rounded-xl shadow">
       <div class="space-y-1">
         <label>Nombre</label>
@@ -90,6 +90,10 @@
       <div class="space-y-1">
         <label>Categoría</label>
         <p-dropdown [options]="categories" [(ngModel)]="nuevoProducto.category_id" name="category_id" optionLabel="name" optionValue="id" placeholder="Seleccione una categoría" class="w-full border border-purple-300 rounded-lg" />
+      </div>
+      <div class="space-y-1">
+        <label>Garantias</label>
+        <p-dropdown [options]="warranties" [(ngModel)]="nuevoProducto.warranty_id" name="warranties_id" optionLabel="name" optionValue="id" placeholder="Seleccione una garantia" class="w-full border border-purple-300 rounded-lg" />
       </div>
       <!-- <div class="space-y-1">
         <label>Garantía</label>
@@ -115,7 +119,7 @@
   </p-dialog>
 
   <!-- modal de editar producto -->
-  <p-dialog header="Editar producto" [(visible)]="editarProductoModalVisible" [modal]="true" [style]="{width: '40vw'}">
+  <p-dialog header="Editar producto" [(visible)]="editarProductoModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" [dismissableMask]="true">
     <form class="grid gap-4 bg-white p-4 rounded-xl shadow">
       <div class="space-y-1">
         <label>Nombre</label>
