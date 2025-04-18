@@ -1,4 +1,26 @@
+<!-- 🔍 Buscador centrado arriba -->
+<div class="flex justify-center w-full mt-4">
+  <div class="flex items-center w-full max-w-md bg-white rounded-full shadow-md px-3 py-2 border border-gray-300">
+    <i class="pi pi-search text-gray-500 text-lg mr-2"></i>
+    <input
+      [(ngModel)]="recomendacionTexto"
+      type="text"
+      placeholder="Recomendación por texto"
+      class="w-full focus:outline-none text-sm"
+    />
+    <button
+      pButton
+      icon="pi pi-arrow-right"
+      class="p-button-sm p-button-rounded p-button-info ml-2"
+      (click)="verRecomendacionPorTexto()"
+    ></button>
+  </div>
+</div>
+
+
+
 <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
     <p-card *ngFor="let producto of products" class="shadow-xl rounded-xl">
       <ng-template pTemplate="header">
         <img 
@@ -35,6 +57,9 @@
               (click)="verMasInfo(producto)"
             ></button>
           </ng-container>
+
+
+
   
           <!-- Vista para admin -->
           <ng-container *ngIf="isAdmin">
@@ -54,6 +79,17 @@
               (click)="eliminarProducto(producto.id)"
             ></button>
           </ng-container>
+        </div>
+        <div class="flex justify-center gap-2 mt-2">
+            <!-- Botón de recomendaciones -->
+            <button
+            pButton
+            class="p-button-sm p-button-info"
+            (click)="verRecomendaciones(producto.name, producto.category.name, producto.brand.name)"
+            >
+            <i class="pi pi-star mr-2"></i>
+            Mostrar recomendaciones
+          </button>
         </div>
       </ng-template>
     </p-card>

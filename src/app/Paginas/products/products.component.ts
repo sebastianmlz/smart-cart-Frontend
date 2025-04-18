@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,10 +35,18 @@ export class ProductsComponent {
   modalVerMasVisible = false;
   modalEditarVisible = false;
 
+  //info del carrito
+  carrito: any[] = [];
+
+  //recomendacion por texto
+  recomendacionTexto: string = '';
+
+
   constructor(
     private productosService: ProductosService,
     private authService: AuthService,
-    private noti: NotificacionService
+    private noti: NotificacionService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -124,9 +133,44 @@ export class ProductsComponent {
     this.productoSeleccionado = null;
   }
 
-  agregarAlCarrito(producto: Product): void {
-    // Aquí puedes integrar tu lógica de carrito
-    console.log('Agregado al carrito:', producto);
-    this.noti.success('Agregado al carrito', producto.name);
+
+  agregarAlCarrito(producto: any): void {
+    const carritoGuardado = localStorage.getItem('carrito');
+    let carrito: any[] = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+  
+    // Verificamos si ya está en el carrito
+    const existe = carrito.find((item) => item.id === producto.id);
+  
+    if (!existe) {
+      // Agregamos el producto con cantidad por defecto
+      carrito.push({ ...producto, quantity: 1 });
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+      this.noti.success('Producto añadido', 'El producto fue añadido al carrito');
+    } else {
+      this.noti.warn('No se puede añadir', 'El producto ya fue añadido al carrito');
+    }
   }
+
+  verRecomendaciones(nombre: string, categoria: string, marca: string): void {
+    const query = `${nombre} ${categoria} ${marca}`;
+    this.router.navigate(['customer/recomendaciones'], {
+      queryParams: { q: query }
+    });
+  }
+
+  verRecomendacionPorTexto(): void {
+    if (!this.recomendacionTexto.trim()) {
+      this.noti.warn('Texto vacío', 'Ingresa una descripción para recomendar');
+      return;
+    }
+  
+    const query = this.recomendacionTexto.trim();
+    this.router.navigate(['/customer/recomendaciones'], {
+      queryParams: { q: query }
+    });
+  }
+  
+  
 }
+
+

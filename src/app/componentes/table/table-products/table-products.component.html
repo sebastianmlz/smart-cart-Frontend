@@ -56,8 +56,16 @@
           />
         </td>
         <td>{{ product.category.name }}</td>
-        <td>{{ product.inventory.stock }}</td>
         <td>
+          <span>{{ product.inventory.stock }}</span>
+          <span
+            *ngIf="product.inventory.stock <= 5"
+            class="ml-2 text-red-600 font-semibold text-xs"
+          >
+            (stock bajo)
+          </span>
+        </td>
+                <td>
           <img [src]="product.image_url" alt="Imagen" width="60" height="60" style="border-radius: 0.5rem" />
         </td>
         <td>

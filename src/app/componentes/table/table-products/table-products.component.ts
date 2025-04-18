@@ -85,10 +85,22 @@ export class TableProductsComponent {
         this.products = res.items;
         console.log("Productos con stock:", this.products);
         console.log("respuesta del backend:", res);
+  
+        // 🔔 Notificar productos con stock bajo
+        this.products.forEach((product: any) => {
+          const stock = product.inventory?.stock;
+          if (stock !== undefined && stock <= 5) {
+            this.noti.warn(
+              'Stock bajo',
+              `El producto ID ${product.id} tiene stock crítico (${stock} unidades)`
+            );
+          }
+        });
       },
       error: (err) => console.error("Error al cargar productos", err),
     });
   }
+  
 
   cargarFormOpciones(): void {
     this.productos.getBrands().subscribe({
@@ -234,9 +246,9 @@ export class TableProductsComponent {
     formData.append('name', this.productoEditable.name);
     formData.append('description', this.productoEditable.description);
     formData.append('technical_specifications', this.productoEditable.technical_specifications);
-    formData.append('brand', this.productoEditable.brand_id.toString());
-    formData.append('category', this.productoEditable.category_id.toString());
-    formData.append('warranty', this.productoEditable.warranty_id.toString());
+    formData.append('brand_id', this.productoEditable.brand_id.toString());
+    formData.append('category_id', this.productoEditable.category_id.toString());
+    formData.append('warranty_id', this.productoEditable.warranty_id.toString());
     formData.append('price_usd', this.productoEditable.price_usd.toString());
     formData.append('active', this.productoEditable.active ? 'true' : 'false');
     if (this.productoEditable.image_url) formData.append('image_url', this.productoEditable.image_url);

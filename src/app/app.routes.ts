@@ -80,6 +80,12 @@ export const routes: Routes = [
       import('./Paginas/customer/soporte/soporte.component').then((m) => m.SoporteComponent),
     canActivate: [customerGuard],
   },
+  {
+    path: 'customer/recomendaciones',
+    loadComponent: () =>
+      import('./Paginas/customer/recomendaciones/recomendaciones.component').then((m) => m.ProductosRecomendacionesComponent),
+    canActivate: [customerGuard],
+  },
 
   // 🌐 Otros
   { path: 'productos', component: ProductsComponent, canActivate: [authGuard] },

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -90,6 +90,18 @@ export class ProductosService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<PaginatedResponse<Warranty>>(`${this.baseUrl}warranties/`, { headers });
   }
+
+  getRecomendaciones(query: string, count: number = 5): Observable<any> {
+    const token = localStorage.getItem('access');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    const params = new HttpParams()
+      .set('query', query)
+      .set('count', count.toString());
+  
+    return this.http.get(`${this.baseUrl}similar/`, { headers, params });
+  }
+  
 
 
 }
