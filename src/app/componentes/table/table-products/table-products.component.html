@@ -130,8 +130,8 @@
   <p-dialog header="Editar producto" [(visible)]="editarProductoModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" [dismissableMask]="true">
     <form class="grid gap-4 bg-white p-4 rounded-xl shadow">
       <div class="space-y-1">
-        <label>Nombre</label>
-        <input pInputText [(ngModel)]="productoEditable.name" name="edit_name" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
+        <label>Stock</label>
+        <input pInputText [(ngModel)]="productoEditable.stock" name="edit_stock" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
       </div>
       <div class="space-y-1">
         <label>Descripción</label>
@@ -158,12 +158,12 @@
         <input type="file" (change)="onEditFileSelected($event)" class="w-full" />
       </div>
       <div class="space-y-1">
-        <label>Modelo 3D</label>
-        <input pInputText [(ngModel)]="productoEditable.model_3d_url" name="edit_model_3d" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
+        <label>Nombre</label>
+        <input pInputText [(ngModel)]="productoEditable.name" name="edit_name" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
       </div>
       <div class="space-y-1">
-        <label>AR URL</label>
-        <input pInputText [(ngModel)]="productoEditable.ar_url" name="edit_ar_url" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
+        <label>Precio $</label>
+        <input pInputText [(ngModel)]="productoEditable.price_usd" name="price_usd" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
       </div>
       <div class="text-right">
         <button pButton type="button" label="Cancelar" class="p-button-text mr-2" (click)="editarProductoModalVisible = false"></button>

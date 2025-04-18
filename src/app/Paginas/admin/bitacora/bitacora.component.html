@@ -1,1 +1,78 @@
-<p>bitacora works!</p>
+<!-- Encabezado -->
+<div class="p-4 space-y-4">
+    <div class="flex items-center justify-center bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl px-6 py-3 text-white">
+      <h2 class="text-lg md:text-xl font-bold flex items-center gap-2">
+        <i class="pi pi-clock text-xl"></i> Bitácora del sistema
+      </h2>
+    </div>
+  
+    <!-- Tabla -->
+    <div class="bg-white rounded-xl overflow-hidden shadow-md mt-3">
+      <p-table [value]="logs" [paginator]="true" [rows]="10" responsiveLayout="scroll">
+        <!-- Cabecera -->
+        <ng-template pTemplate="header">
+          <tr class="bg-gray-100 text-gray-800 text-sm font-semibold">
+            <th class="py-2 px-3">ID</th>
+            <th class="py-2 px-3">ID Usuario</th>
+            <th class="py-2 px-3">Acción</th>
+            <th class="py-2 px-3">Nivel</th>
+            <th class="py-2 px-3">Fecha</th>
+            <th class="py-2 px-3 text-center">Acción</th>
+          </tr>
+        </ng-template>
+  
+        <!-- Cuerpo -->
+        <ng-template pTemplate="body" let-log>
+          <tr class="hover:bg-gray-50 transition-all duration-200">
+            <td class="py-2 px-3 text-sm">{{ log.id }}</td>
+            <td class="py-2 px-3 text-sm">{{ log.user_id }}</td>
+            <td class="py-2 px-3 text-sm capitalize">{{ log.action }}</td>
+            <td class="py-2 px-3 text-sm">
+              <span 
+                class="text-green-800 bg-green-100 px-2 py-1 text-xs font-semibold rounded-full"
+                *ngIf="log.level === 'INFO'"
+              >INFO</span>
+              <span 
+                class="text-red-800 bg-red-100 px-2 py-1 text-xs font-semibold rounded-full"
+                *ngIf="log.level === 'ERROR'"
+              >ERROR</span>
+            </td>
+            <td class="py-2 px-3 text-sm">{{ log.created_at | date: 'short' }}</td>
+            <td class="py-2 px-3 text-center">
+              <button 
+                pButton 
+                icon="pi pi-eye" 
+                class="p-button-sm p-button-info"
+                (click)="abrirModalDetalle(log)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  
+  
+  <!-- MODAL DETALLE -->
+  <p-dialog 
+    [(visible)]="modalVisible" 
+    header="Detalle del evento" 
+    [style]="{width: '400px'}" 
+    [modal]="true" 
+    [dismissableMask]="true" 
+    (onHide)="cerrarModal()"
+  >
+    <div *ngIf="logSeleccionado">
+      <p><strong>ID:</strong> {{ logSeleccionado.id }}</p>
+      <p><strong>ID Usuario:</strong> {{ logSeleccionado.user_id }}</p>
+      <p><strong>Nombre:</strong> {{ usuarioDetalle?.first_name || '-' }}</p>
+      <p><strong>Apellido:</strong> {{ usuarioDetalle?.last_name || '-' }}</p>
+      <p><strong>Correo:</strong> {{ usuarioDetalle?.email || '-' }}</p>
+      <p><strong>Rol:</strong> {{ usuarioDetalle?.role || '-' }}</p>
+      <p><strong>Acción:</strong> {{ logSeleccionado.action }}</p>
+      <p><strong>Descripción:</strong> {{ logSeleccionado.description }}</p>
+      <p><strong>Nivel:</strong> {{ logSeleccionado.level }}</p>
+      <p><strong>Fecha:</strong> {{ logSeleccionado.created_at | date: 'full' }}</p>
+    </div>
+  </p-dialog>
+  

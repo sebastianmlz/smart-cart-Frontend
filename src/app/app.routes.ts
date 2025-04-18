@@ -45,7 +45,7 @@ export const routes: Routes = [
   {
     path: 'admin/reportes',
     loadComponent: () =>
-      import('./Paginas/admin/reportes/reportes.component').then((m) => m.ReportesComponent),
+      import('./Paginas/reportes/reportes.component').then((m) => m.ReportesComponent),
     canActivate: [adminGuard],
   },
 
@@ -89,9 +89,8 @@ export const routes: Routes = [
 
   // 🌐 Otros
   { path: 'productos', component: ProductsComponent, canActivate: [authGuard] },
-  // { path: 'configuracion', loadComponent: () => import('./Paginas/configuracion/configuracion.component').then(m => m.ConfiguracionComponent), canActivate: [authGuard] },
-
   { path: 'configuracion', loadComponent: () => import('./Paginas/configuracion/configuracion.component').then(m => m.ConfiguracionComponent), canActivate: [authGuard] },
+  // { path: 'reportes', loadComponent: () => import('./Paginas/reportes/reportes.component').then(m => m.ReportesComponent), canActivate: [authGuard] },
   { path: 'Home', component: HomeComponent },
   { path: '**', component: IngresoComponent }
 ];

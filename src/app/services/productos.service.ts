@@ -55,13 +55,13 @@ export class ProductosService {
   editarProducto(product_id: number, data: FormData): Observable<any> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.patch(`${this.baseUrl}${product_id}`, data, { headers });
+    return this.http.patch(`${this.baseUrl}${product_id}/`, data, { headers });
   }
 
   eliminarProducto(id: number): Observable<any> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.baseUrl}${id}`, { headers });
+    return this.http.delete(`${this.baseUrl}${id}/`, { headers });
   }
   
 

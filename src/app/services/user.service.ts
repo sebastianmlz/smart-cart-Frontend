@@ -33,7 +33,7 @@ export class UserService {
   actualizarUser(id: number, user: Partial<User>): Observable<User> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.patch<User>(`${this.baseUrl}${id}`, user, { headers });
+    return this.http.patch<User>(`${this.baseUrl}${id}/`, user, { headers });
   }
 
 
@@ -52,6 +52,8 @@ export class UserService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.baseUrl}change-password/`, data, { headers });
   }
+
+
   
   
   

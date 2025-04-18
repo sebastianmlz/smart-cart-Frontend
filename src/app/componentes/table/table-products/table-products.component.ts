@@ -224,6 +224,7 @@ export class TableProductsComponent {
       created_at: producto.created_at,
       active: producto.active,
       price_usd: producto.price_usd,
+      stock: producto.inventory?.stock || 0,
       image_url: producto.image_url,
     };
   
@@ -250,6 +251,7 @@ export class TableProductsComponent {
     formData.append('category_id', this.productoEditable.category_id.toString());
     formData.append('warranty_id', this.productoEditable.warranty_id.toString());
     formData.append('price_usd', this.productoEditable.price_usd.toString());
+    formData.append('stock', this.productoEditable.stock.toString());
     formData.append('active', this.productoEditable.active ? 'true' : 'false');
     if (this.productoEditable.image_url) formData.append('image_url', this.productoEditable.image_url);
     // if (this.nuevoProducto.image_url) {
