@@ -2,8 +2,16 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
-app.use(express.static(path.join(__dirname, 'dist/smart-cart-frontend/browser')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/smart-cart-frontend/browser/index.html'));
+
+// Servir archivos estáticos
+const staticPath = path.join(__dirname, 'dist/smart-cart-frontend/browser');
+app.use(express.static(staticPath));
+
+// Ruta de fallback para SPA
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(staticPath, 'index.html'));
 });
-app.listen(port, () => console.log(`Server running on port ${port}`));
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
