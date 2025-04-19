@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npx http-server dist/smart-cart-frontend/browser -p $PORT --spa",
+    "start": "node server.js",
     "prebuild": "node -r dotenv/config set-env.js",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
@@ -20,6 +20,7 @@
     "@angular/router": "^19.2.0",
     "@primeng/themes": "^19.0.10",
     "dotenv": "^16.5.0",
+    "express": "^5.1.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.10",
     "rxjs": "~7.8.0",
