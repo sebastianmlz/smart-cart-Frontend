@@ -55,24 +55,53 @@
   
   <!-- MODAL DETALLE -->
   <p-dialog 
-    [(visible)]="modalVisible" 
-    header="Detalle del evento" 
-    [style]="{width: '400px'}" 
-    [modal]="true" 
-    [dismissableMask]="true" 
-    (onHide)="cerrarModal()"
-  >
-    <div *ngIf="logSeleccionado">
-      <p><strong>ID:</strong> {{ logSeleccionado.id }}</p>
-      <p><strong>ID Usuario:</strong> {{ logSeleccionado.user_id }}</p>
-      <p><strong>Nombre:</strong> {{ usuarioDetalle?.first_name || '-' }}</p>
-      <p><strong>Apellido:</strong> {{ usuarioDetalle?.last_name || '-' }}</p>
-      <p><strong>Correo:</strong> {{ usuarioDetalle?.email || '-' }}</p>
-      <p><strong>Rol:</strong> {{ usuarioDetalle?.role || '-' }}</p>
-      <p><strong>Acción:</strong> {{ logSeleccionado.action }}</p>
-      <p><strong>Descripción:</strong> {{ logSeleccionado.description }}</p>
-      <p><strong>Nivel:</strong> {{ logSeleccionado.level }}</p>
-      <p><strong>Fecha:</strong> {{ logSeleccionado.created_at | date: 'full' }}</p>
+  [(visible)]="modalVisible"
+  [modal]="true"
+  [closable]="false"
+  [dismissableMask]="true"
+  [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'"
+  class="rounded-xl custom-dialog p-0 overflow-hidden"
+>
+  <!-- 🟣 Header personalizado -->
+  <ng-template pTemplate="header">
+    <div class="w-full text-center text-white text-lg font-bold bg-purple-700 py-2 rounded-t-xl">
+      <h2 class="text-center text-white text-lg font-bold m-0">
+        Detalle del evento
+      </h2>
     </div>
-  </p-dialog>
+  </ng-template>
+
+  <div *ngIf="logSeleccionado" class="p-5 text-sm text-gray-800 space-y-2">
+    <div class="grid grid-cols-2 gap-y-2">
+      <div><strong>ID:</strong> {{ logSeleccionado.id }}</div>
+      <div><strong>ID Usuario:</strong> {{ logSeleccionado.user_id }}</div>
+      <div><strong>Nombre:</strong> {{ usuarioDetalle?.first_name || '-' }}</div>
+      <div><strong>Apellido:</strong> {{ usuarioDetalle?.last_name || '-' }}</div>
+      <div><strong>Correo:</strong> {{ usuarioDetalle?.email || '-' }}</div>
+      <div><strong>Rol:</strong> {{ usuarioDetalle?.role || '-' }}</div>
+      <div><strong>Acción:</strong> {{ logSeleccionado.action }}</div>
+      <div><strong>Nivel:</strong> {{ logSeleccionado.level }}</div>
+      <div class="col-span-2"><strong>Descripción:</strong> {{ logSeleccionado.description }}</div>
+      <div class="col-span-2">
+        <strong>Fecha:</strong>
+        {{ logSeleccionado.created_at | date: 'full' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔴 Botón de cerrar -->
+  <ng-template pTemplate="footer">
+    <div class="w-full flex justify-end px-5 pb-4">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-times"
+        label="Cerrar"
+        class="p-button-sm bg-purple-600 text-white border-none hover:bg-purple-700"
+        (click)="cerrarModal()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
   

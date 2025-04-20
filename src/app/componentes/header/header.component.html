@@ -5,7 +5,7 @@
           <!-- Botones para Admin -->
           <ng-container *ngIf=" authService.isLoggedIn()">
             <p-button
-              routerLink="/home"
+              routerLink="/productos"
               label="Smart Cart"
               styleClass="bg-transparent text-purple-600 font-bold text-xl border-none hover:text-purple-400"
             ></p-button>
@@ -74,7 +74,7 @@
           <!-- Icono perfil -->
           <ng-container *ngIf="authService.isAdmin() && authService.isLoggedIn()">
             <p-button
-              routerLink="/settings"
+              routerLink="/configuracion"
               styleClass="bg-transparent text-white hover:text-purple-400 border-none"
               title="Ir a ajustes de perfil"
             >

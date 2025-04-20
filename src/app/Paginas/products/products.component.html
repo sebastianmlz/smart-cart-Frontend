@@ -1,6 +1,6 @@
 <!-- 🔍 Buscador centrado arriba -->
-<div class="flex justify-center w-full mt-4">
-  <div class="flex items-center w-full max-w-md bg-white rounded-full shadow-md px-3 py-2 border border-gray-300">
+<div class="flex justify-center w-full mt-4" >
+  <div class="flex items-center w-full max-w-md bg-white rounded-full shadow-md px-3 py-2 border border-gray-300 mx-4" >
     <i class="pi pi-search text-gray-500 text-lg mr-2"></i>
     <input
       [(ngModel)]="recomendacionTexto"
@@ -96,32 +96,72 @@
   </div>
   
   <!-- Modal ver más info -->
-  <p-dialog 
-    [(visible)]="modalVerMasVisible" 
-    [modal]="true" 
-    [closable]="true" 
-    [dismissableMask]="true" 
-    header="Detalles del producto"
-    [style]="{ width: '400px' }"
-    (onHide)="cerrarModales()"
-  >
-    <ng-container *ngIf="productoSeleccionado">
-      <img 
-        [src]="productoSeleccionado.image_url || 'https://img.freepik.com/vector-premium/e-commerce-linea-carrito-compras-pago-linea-tienda-linea-producto-ilustracion-vector-icono_679085-37.jpg'" 
-        alt="Imagen producto" 
-        class="w-full h-40 object-contain rounded"
+  <p-dialog
+  [(visible)]="modalVerMasVisible"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'"
+  class="rounded-xl overflow-hidden"
+>
+  <!-- Header personalizado -->
+  <ng-template pTemplate="header">
+    <div class="bg-purple-700 text-white py-3 px-4 text-center text-lg font-semibold rounded-t-xl">
+      Detalles del producto
+    </div>
+  </ng-template>
+
+  <!-- Contenido -->
+  <ng-container *ngIf="productoSeleccionado">
+    <div class="flex flex-col items-center p-4 text-gray-800">
+      <img
+        [src]="productoSeleccionado.image_url || 'https://img.freepik.com/vector-premium/e-commerce-linea-carrito-compras-pago-linea-tienda-linea-producto-ilustracion-vector-icono_679085-37.jpg'"
+        alt="Imagen producto"
+        class="w-40 h-40 object-contain rounded mb-4"
       />
-  
-      <div class="mt-4 space-y-1 text-sm">
-        <p><strong>Nombre:</strong> {{ productoSeleccionado.name }}</p>
-        <p><strong>Precio:</strong> ${{ productoSeleccionado.price_usd }}</p>
-        <p><strong>Marca:</strong> {{ productoSeleccionado.brand.name }}</p>
-        <p><strong>Categoría:</strong> {{ productoSeleccionado.category.name }}</p>
-        <p><strong>Garantía:</strong> {{ productoSeleccionado.warranty.name }}</p>
-        <p><strong>Descripción:</strong> {{ productoSeleccionado.description }}</p>
+
+      <div class="w-full space-y-2 text-sm">
+        <div class="flex justify-between">
+          <strong class="text-gray-600">Nombre:</strong>
+          <span>{{ productoSeleccionado.name }}</span>
+        </div>
+        <div class="flex justify-between">
+          <strong class="text-gray-600">Precio:</strong>
+          <span>{{ productoSeleccionado.price_usd | currency }}</span>
+        </div>
+        <div class="flex justify-between">
+          <strong class="text-gray-600">Marca:</strong>
+          <span>{{ productoSeleccionado.brand?.name || '-' }}</span>
+        </div>
+        <div class="flex justify-between">
+          <strong class="text-gray-600">Categoría:</strong>
+          <span>{{ productoSeleccionado.category?.name || '-' }}</span>
+        </div>
+        <div class="flex justify-between">
+          <strong class="text-gray-600">Garantía:</strong>
+          <span>{{ productoSeleccionado.warranty?.name || '-' }}</span>
+        </div>
+        <div class="flex flex-col">
+          <strong class="text-gray-600">Descripción:</strong>
+          <span>{{ productoSeleccionado.description || 'Sin descripción' }}</span>
+        </div>
       </div>
-    </ng-container>
-  </p-dialog>
+    </div>
+  </ng-container>
+
+  <!-- Footer -->
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-times"
+      label="Cerrar"
+      (click)="cerrarModales()"
+      class="p-button-sm p-button-rounded p-button-secondary bg-purple-600 text-white border-none"
+    ></button>
+  </ng-template>
+</p-dialog>
+
   
   <!-- Modal de edición -->
   <p-dialog 

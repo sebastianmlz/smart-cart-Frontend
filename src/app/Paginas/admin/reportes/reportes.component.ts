@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { reportsService } from '../../services/reports.service';
-import { AuthService } from '../../services/auth.service';
-import { User } from '../../models/user.model';
+import { reportsService } from '../../../services/reports.service';
+import { AuthService } from '../../../services/auth.service';
+import { User } from '../../../models/user.model';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';

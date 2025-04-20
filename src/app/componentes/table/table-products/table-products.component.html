@@ -22,6 +22,7 @@
     [paginator]="true" 
     [rowHover]="true" 
     dataKey="id"
+    
   >
     <ng-template pTemplate="caption">
       <div class="flex justify-center items-center py-4 bg-gradient-to-r from-purple-700 to-purple-900 rounded-t-lg shadow-md">
@@ -130,8 +131,8 @@
   <p-dialog header="Editar producto" [(visible)]="editarProductoModalVisible" [modal]="true" [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'" [dismissableMask]="true">
     <form class="grid gap-4 bg-white p-4 rounded-xl shadow">
       <div class="space-y-1">
-        <label>Stock</label>
-        <input pInputText [(ngModel)]="productoEditable.stock" name="edit_stock" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
+        <label>Nombre</label>
+        <input pInputText [(ngModel)]="productoEditable.name" name="edit_name" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
       </div>
       <div class="space-y-1">
         <label>Descripción</label>
@@ -158,8 +159,8 @@
         <input type="file" (change)="onEditFileSelected($event)" class="w-full" />
       </div>
       <div class="space-y-1">
-        <label>Nombre</label>
-        <input pInputText [(ngModel)]="productoEditable.name" name="edit_name" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
+        <label>Stock</label>
+        <input pInputText [(ngModel)]="productoEditable.stock" name="edit_stock" class="w-full border border-purple-300 focus:border-purple-600 focus:ring-purple-600 rounded-lg px-3 py-2" />
       </div>
       <div class="space-y-1">
         <label>Precio $</label>

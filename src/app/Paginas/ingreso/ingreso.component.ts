@@ -61,9 +61,9 @@ export class IngresoComponent {
   
             // Redirigir dependiendo del rol
             if (userData.role === 'admin') {
-              this.router.navigate(['/admin']);
+              this.router.navigate(['/productos']);
             } else if (userData.role === 'customer') {
-              this.router.navigate(['/customer']);
+              this.router.navigate(['/productos']);
             } else {
               this.router.navigate(['/']);
             }

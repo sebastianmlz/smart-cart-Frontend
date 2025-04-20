@@ -1,0 +1,170 @@
+<!-- Título centrado -->
+<h2 class="text-center text-2xl font-bold text-purple-700 mb-6">Recomendaciones personalizadas</h2>
+<!-- 🔍 Buscador centrado arriba -->
+<div class="flex justify-center w-full mt-4">
+    <div class="flex items-center w-full max-w-md bg-white rounded-full shadow-md px-3 py-2 border border-gray-300">
+      <i class="pi pi-search text-gray-500 text-lg mr-2"></i>
+      <input
+        [(ngModel)]="recomendacionTexto"
+        type="text"
+        placeholder="Recomendación por texto"
+        class="w-full focus:outline-none text-sm"
+      />
+      <button
+        pButton
+        icon="pi pi-arrow-right"
+        class="p-button-sm p-button-rounded p-button-info ml-2"
+        (click)="verRecomendacionPorTexto()"
+      ></button>
+    </div>
+  </div>
+  
+  
+  
+  <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  
+      <p-card *ngFor="let producto of products" class="shadow-xl rounded-xl">
+        <ng-template pTemplate="header">
+          <img 
+            [src]="producto.image_url || 'https://img.freepik.com/vector-premium/e-commerce-linea-carrito-compras-pago-linea-tienda-linea-producto-ilustracion-vector-icono_679085-37.jpg'" 
+            alt="Imagen producto"
+            class="w-full h-40 object-contain rounded-t-xl"
+          />
+        </ng-template>
+    
+        <div class="p-2 text-center space-y-2">
+          <h2 class="font-bold text-lg text-purple-700">{{ producto.name }}</h2>
+          <p class="text-green-600 font-semibold text-md">${{ producto.price_usd }}</p>
+        </div>
+    
+        <ng-template pTemplate="footer">
+          <div class="flex justify-center gap-2 mt-2">
+            <!-- Vista para cliente -->
+            <ng-container *ngIf="!isAdmin">
+              <button 
+                pButton 
+                type="button" 
+                label="Agregar al carrito" 
+                icon="pi pi-shopping-cart"
+                class="p-button-sm p-button-success"
+                (click)="agregarAlCarrito(producto)"
+              ></button>
+    
+              <button 
+                pButton 
+                type="button" 
+                label="Ver más info" 
+                icon="pi pi-eye"
+                class="p-button-sm p-button-info"
+                (click)="verMasInfo(producto)"
+              ></button>
+            </ng-container>
+  
+  
+  
+    
+            <!-- Vista para admin -->
+            <ng-container *ngIf="isAdmin">
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-pencil" 
+                class="p-button-sm p-button-warning"
+                (click)="abrirModalEditar(producto)"
+              ></button>
+    
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-trash" 
+                class="p-button-sm p-button-danger"
+                (click)="eliminarProducto(producto.id)"
+              ></button>
+            </ng-container>
+          </div>
+          <div class="flex justify-center gap-2 mt-2">
+              <!-- Botón de recomendaciones -->
+              <button
+              pButton
+              class="p-button-sm p-button-info"
+              (click)="verRecomendaciones(producto.name, producto.category.name, producto.brand.name)"
+              >
+              <i class="pi pi-star mr-2"></i>
+              Mostrar recomendaciones
+            </button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+    
+    <!-- Modal ver más info -->
+    <p-dialog 
+      [(visible)]="modalVerMasVisible" 
+      [modal]="true" 
+      [closable]="true" 
+      [dismissableMask]="true" 
+      header="Detalles del producto"
+      [style]="{ width: '400px' }"
+      (onHide)="cerrarModales()"
+    >
+      <ng-container *ngIf="productoSeleccionado">
+        <img 
+          [src]="productoSeleccionado.image_url || 'https://img.freepik.com/vector-premium/e-commerce-linea-carrito-compras-pago-linea-tienda-linea-producto-ilustracion-vector-icono_679085-37.jpg'" 
+          alt="Imagen producto" 
+          class="w-full h-40 object-contain rounded"
+        />
+    
+        <div class="mt-4 space-y-1 text-sm">
+          <p><strong>Nombre:</strong> {{ productoSeleccionado.name }}</p>
+          <p><strong>Precio:</strong> ${{ productoSeleccionado.price_usd }}</p>
+          <p><strong>Marca:</strong> {{ productoSeleccionado.brand.name }}</p>
+          <p><strong>Categoría:</strong> {{ productoSeleccionado.category.name }}</p>
+          <p><strong>Garantía:</strong> {{ productoSeleccionado.warranty.name }}</p>
+          <p><strong>Descripción:</strong> {{ productoSeleccionado.description }}</p>
+        </div>
+      </ng-container>
+    </p-dialog>
+    
+    <!-- Modal de edición -->
+    <p-dialog 
+      [(visible)]="modalEditarVisible" 
+      [modal]="true" 
+      header="Editar producto"
+      [styleClass]="'w-[90vw] md:w-[50vw] lg:w-[40vw]'"
+      [dismissableMask]="true"
+      (onHide)="cerrarModales()"
+    >
+      <div class="space-y-3">
+        <label class="block text-sm font-semibold">Nombre</label>
+        <input pInputText [(ngModel)]="productoEditable.name" class="w-full" />
+    
+        <label class="block text-sm font-semibold">Descripción</label>
+        <textarea pInputTextarea [(ngModel)]="productoEditable.description" rows="2" class="w-full"></textarea>
+    
+        <label class="block text-sm font-semibold">Especificaciones</label>
+        <textarea pInputTextarea [(ngModel)]="productoEditable.technical_specifications" rows="2" class="w-full"></textarea>
+    
+        <label class="block text-sm font-semibold">Precio</label>
+        <input pInputText type="number" [(ngModel)]="productoEditable.price_usd" class="w-full" />
+    
+        <!-- Puedes agregar select de marca/categoría si ya tienes cargadas las listas -->
+    
+        <div class="flex justify-end gap-2 pt-4">
+          <button 
+            pButton 
+            label="Guardar" 
+            icon="pi pi-check" 
+            class="p-button-success"
+            (click)="guardarEdicion()"
+          ></button>
+          <button 
+            pButton 
+            label="Cancelar" 
+            icon="pi pi-times" 
+            class="p-button-secondary"
+            (click)="cerrarModales()"
+          ></button>
+        </div>
+      </div>
+    </p-dialog>
+    
