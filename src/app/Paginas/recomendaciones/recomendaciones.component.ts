@@ -31,7 +31,7 @@ export class ProductosRecomendacionesComponent implements OnInit {
   recomendaciones: any[] = [];
 
   products: Product[] = [];
-  isAdmin: boolean = false;
+  rol: string = '';
 
   productoSeleccionado: Product | null = null;
   productoEditable: any = {};
@@ -58,6 +58,7 @@ export class ProductosRecomendacionesComponent implements OnInit {
     this.productosService.getRecomendaciones(query).subscribe({
       next: (res) => {
         this.recomendaciones = res; // Asegúrate que se asigna bien
+        this.verificarRol();
 console.log("Recomendaciones recibidas:", this.recomendaciones);
 
       },
@@ -87,7 +88,8 @@ console.log("Recomendaciones recibidas:", this.recomendaciones);
 
   verificarRol(): void {
     const user = this.authService.getUser();
-    this.isAdmin = user?.role === 'admin';
+    // this.isAdmin = user?.role === 'admin';
+    this.rol = user?.role || '';
   }
 
   verMasInfo(producto: Product): void {

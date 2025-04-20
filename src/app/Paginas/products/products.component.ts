@@ -186,7 +186,7 @@ export class ProductsComponent {
 
   verRecomendaciones(nombre: string, categoria: string, marca: string): void {
     const query = `${nombre} ${categoria} ${marca}`;
-    this.router.navigate(['customer/recomendaciones'], {
+    this.router.navigate(['/recomendaciones'], {
       queryParams: { q: query }
     });
   }
@@ -198,7 +198,7 @@ export class ProductsComponent {
     }
   
     const query = this.recomendacionTexto.trim();
-    this.router.navigate(['/customer/recomendaciones'], {
+    this.router.navigate(['/recomendaciones'], {
       queryParams: { q: query }
     });
   }

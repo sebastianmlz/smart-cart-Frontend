@@ -23,7 +23,7 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'customer/recomendaciones',
+    path: 'recomendaciones',
     loadComponent: () => import('./Paginas/recomendaciones/recomendaciones.component').then((m) => m.ProductosRecomendacionesComponent),
     canActivate: [authGuard],
   },
