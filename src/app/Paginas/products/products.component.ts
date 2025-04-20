@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { Router } from '@angular/router';
+import { OrdersService } from '../../services/orders.service';
 
 
 @Component({
@@ -46,6 +47,7 @@ export class ProductsComponent {
     private productosService: ProductosService,
     private authService: AuthService,
     private noti: NotificacionService,
+    private ordersService: OrdersService,
     private router: Router
   ) {}
 
@@ -135,21 +137,52 @@ export class ProductsComponent {
 
 
   agregarAlCarrito(producto: any): void {
-    const carritoGuardado = localStorage.getItem('carrito');
-    let carrito: any[] = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+    this.ordersService.getVentas().subscribe({
+      next: (res: any) => {
+        const ultimaOrden = res.items?.[0];
   
-    // Verificamos si ya está en el carrito
-    const existe = carrito.find((item) => item.id === producto.id);
-  
-    if (!existe) {
-      // Agregamos el producto con cantidad por defecto
-      carrito.push({ ...producto, quantity: 1 });
-      localStorage.setItem('carrito', JSON.stringify(carrito));
-      this.noti.success('Producto añadido', 'El producto fue añadido al carrito');
-    } else {
-      this.noti.warn('No se puede añadir', 'El producto ya fue añadido al carrito');
-    }
+        if (!ultimaOrden || ultimaOrden.payment?.payment_status === 'completed') {
+          // Si no hay orden activa o ya fue completada, se crea una nueva orden
+          const dataFinance = {
+            currency: 'USD',
+            items: [{ product_id: producto.id, quantity: 1 }]
+          };
+          console.log("dataFinance: ",dataFinance);
+          this.ordersService.createFinance(dataFinance).subscribe({
+            next: (ordenCreada) => {
+              this.noti.success('Nuevo carrito creado', 'Producto añadido al carrito');
+            },
+            error: (err) => {
+              console.error('Error al crear nueva orden', err);
+              this.noti.error('Error', 'No se pudo crear una nueva orden');
+            }
+          });
+        } else {
+          // Si la última orden aún está activa, solo se añade el item
+          const dataItem = {
+            order_id: ultimaOrden.id,
+            product_id: producto.id,
+            quantity: 1
+          };
+          console.log("nuevo producto al carrito: ",dataItem);
+          this.ordersService.createOrderItem(dataItem).subscribe({
+            next: () => {
+              this.noti.success('Producto añadido', 'El producto fue añadido al carrito');
+            },
+            error: (err) => {
+              console.error('Error al agregar producto a la orden activa', err);
+              this.noti.error('Error', 'No se pudo agregar el producto al carrito');
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener órdenes', err);
+        this.noti.error('Error', 'No se pudo verificar el estado del carrito');
+      }
+    });
   }
+  
 
   verRecomendaciones(nombre: string, categoria: string, marca: string): void {
     const query = `${nombre} ${categoria} ${marca}`;

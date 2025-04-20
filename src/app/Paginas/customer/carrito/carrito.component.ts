@@ -22,6 +22,10 @@ export class CarritoComponent {
   carrito: any[] = [];
   totalPagar: number = 0;
 
+  ordenActivaId: number | null = null;
+  editedItems: { [id: number]: boolean } = {}; // controlamos qué item fue editado
+
+
     constructor(
       // private productosService: ProductosService,
       private authService: AuthService,
@@ -38,25 +42,125 @@ export class CarritoComponent {
     
       if (pagoExitoso && ordenPendiente) {
         localStorage.removeItem('pendingOrder');
-        localStorage.removeItem('carrito');
         this.carrito = [];
         this.totalPagar = 0;
         this.noti.success('Pago exitoso', 'Tu compra fue procesada correctamente');
         return;
       }
     
-      const carritoGuardado = localStorage.getItem('carrito');
-      if (carritoGuardado) {
-        this.carrito = JSON.parse(carritoGuardado).map((item: any) => ({
-          ...item,
-          price_usd: +item.price_usd,
-          quantity: +item.quantity
-        }));
-        this.calcularTotal();
+      // Obtener última orden activa del backend
+      this.ordersService.getVentas().subscribe({
+        next: (res: any) => {
+          const ordenes = res.items;
+          if (ordenes.length === 0) return;
+    
+          const ultimaOrden = ordenes[0]; // orden más reciente
+          this.ordenActivaId = ultimaOrden.id;
+          console.log("ultima orden: ",ultimaOrden);
+          const estadoPago = ultimaOrden.payment?.payment_status;
+    
+          if (estadoPago !== 'completed') {
+            // Si no está completada, usar esta orden
+
+            this.carrito = ultimaOrden.items.map((item: any) => ({
+              id: item.product.id,
+              name: item.product.name,
+              price_usd: item.product.price_usd,
+              quantity: item.quantity,
+              image_url: item.product.image_url,
+              order_item_id: item.id // para luego usarlo en el PATCH
+            }));
+            this.calcularTotal();
+            console.log('Última orden activa cargada:', this.carrito);
+          } else {
+            // Si está completada, no mostrar carrito
+            this.carrito = [];
+            this.totalPagar = 0;
+            console.log('La última orden ya está completada');
+          }
+        },
+        error: (err) => {
+          console.error('Error al cargar órdenes:', err);
+        }
+      });
+    }
+    
+    guardarCantidad(item: any): void {
+      if (!item.order_item_id || item.quantity <= 0) {
+        this.noti.warn('Cantidad inválida', 'No se puede actualizar');
+        return;
+      }
+    
+      const data = { quantity: item.quantity };
+      this.ordersService.patchOrderItem(item.order_item_id, data).subscribe({
+        next: () => {
+          this.noti.success('Cantidad actualizada', 'El producto fue actualizado');
+          this.editedItems[item.id] = false; // ocultar botón
+          this.calcularTotal();
+        },
+        error: (err) => {
+          console.error('Error al actualizar cantidad:', err);
+          this.noti.error('Error', 'No se pudo actualizar la cantidad');
+        }
+      });
+    }
+
+    marcarComoEditado(itemId: number): void {
+      this.editedItems[itemId] = true;
+    }
+
+    eliminarItemBackend(item: any): void {
+      if (confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
+        const orderItemId = item.order_item_id; // asegurate que este campo exista
+        if (!orderItemId) {
+          this.noti.error('Error', 'No se encontró el ID del item para eliminar');
+          return;
+        }
+    
+        this.ordersService.eliminarOrderItem(orderItemId).subscribe({
+          next: () => {
+            // Eliminar del array del frontend también
+            this.carrito = this.carrito.filter(i => i.order_item_id !== orderItemId);
+            this.noti.success('Producto eliminado', 'El producto fue eliminado del carrito');
+            this.calcularTotal();
+          },
+          error: (err) => {
+            console.error('Error al eliminar el producto:', err);
+            this.noti.error('Error', 'No se pudo eliminar el producto');
+          }
+        });
       }
     }
-  
-  
+    
+
+    ordenar(): void {
+      const orderId = this.ordenActivaId;
+      console.log('orden activa:', orderId);
+    
+      if (!orderId) {
+        this.noti.error('Error', 'No se encontró una orden activa para continuar con el pago');
+        return;
+      }
+    
+      this.ordersService.createStripeCheckout(orderId).subscribe({
+        next: (res: any) => {
+          if (res.checkout_url) {
+            localStorage.setItem('pendingOrder', String(orderId));
+            window.location.href = res.checkout_url;
+          } else {
+            this.noti.error('Error', 'No se recibió la URL de Stripe');
+          }
+        },
+        error: (err) => {
+          console.error('Error al generar el checkout:', err);
+          this.noti.error('Error', 'No se pudo generar el checkout');
+        }
+      });
+    }
+    
+    
+    
+    
 
   eliminarDelCarrito(index: number): void {
     this.carrito.splice(index, 1);
@@ -103,7 +207,7 @@ export class CarritoComponent {
         }));
   
         // 2. Enviar cada item
-        const requests = itemsData.map((itemData: any) =>
+        const requests = itemsData.map((itemData: any) => 
           this.ordersService.createOrderItem(itemData)
         );
   

@@ -25,6 +25,18 @@ export class OrdersService {
         return this.http.post(`${this.baseUrl}/order-items/`, data, { headers });
     }
 
+    patchOrderItem(itemId: number, data: any): Observable<any> {
+        const token = localStorage.getItem('access');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.patch<any>(`${this.baseUrl}/order-items/${itemId}/`, data, { headers });
+    }      
+
+    eliminarOrderItem(id: number): Observable<any> {
+        const token = localStorage.getItem('access');
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.delete(`${this.baseUrl}/order-items/${id}/`, { headers });
+    }      
+
 
     /**  ⬇️  NUEVO  —  POST /orders/stripe-checkout/  */
     createStripeCheckout(orderId: number): Observable<any> {

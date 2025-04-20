@@ -22,12 +22,14 @@ export class HistorialPedidosComponent  implements OnInit {
 
   ngOnInit(): void {
     this.obtenerVentas();
+    console.log("ordenes realizadas: ",this.ventas);
   }
 
   obtenerVentas(): void {
     this.ordersService.getVentas().subscribe({
       next: (res: any) => {
         // 🔍 Solo incluir las ventas pagadas
+        
         this.ventas = res.items.filter(
           (venta: any) => venta.payment?.payment_status === 'completed'
         );
