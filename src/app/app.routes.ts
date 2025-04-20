@@ -10,10 +10,10 @@ import { redirectLoggedInGuard } from './guards/redirectLoggedInGuard';
 
 export const routes: Routes = [
   // Público
-  { path: '', redirectTo: 'Home', pathMatch: 'full' },
-  { path: 'Home', component: HomeComponent },
+  { path: '', redirectTo: 'ingreso', pathMatch: 'full' },
   { path: 'ingreso', component: IngresoComponent, canActivate: [redirectLoggedInGuard] },
   { path: 'registro', component: RegistroComponent, canActivate: [redirectLoggedInGuard] },
+  { path: 'Home', component: HomeComponent },
 
   // Rutas comunes protegidas
   { path: 'productos', component: ProductsComponent, canActivate: [authGuard] },
@@ -86,7 +86,6 @@ export const routes: Routes = [
     loadComponent: () => import('./Paginas/customer/soporte/soporte.component').then((m) => m.SoporteComponent),
     canActivate: [customerGuard],
   },
-
 
   // Wildcard
   { path: '**', redirectTo: 'ingreso' },
