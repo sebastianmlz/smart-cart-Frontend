@@ -91,7 +91,7 @@ export class ProductosService {
     return this.http.get<PaginatedResponse<Warranty>>(`${this.baseUrl}warranties/`, { headers });
   }
 
-  getRecomendaciones(query: string, count: number = 5): Observable<any> {
+  getRecomendaciones(query: string, count: number = 8): Observable<any> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   

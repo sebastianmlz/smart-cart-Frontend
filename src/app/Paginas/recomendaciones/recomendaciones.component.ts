@@ -50,12 +50,21 @@ export class ProductosRecomendacionesComponent implements OnInit {
     private authService: AuthService,
     private noti: NotificacionService,
     private ordersService: OrdersService,
-    private router: Router
+    private router: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    this.obtenerProductos();
-    this.verificarRol();
+  ngOnInit(): void {
+    const query = this.router.snapshot.queryParamMap.get('q') || '';
+    this.productosService.getRecomendaciones(query).subscribe({
+      next: (res) => {
+        this.recomendaciones = res; // Asegúrate que se asigna bien
+console.log("Recomendaciones recibidas:", this.recomendaciones);
+
+      },
+      error: (err) => {
+        console.error('Error al obtener recomendaciones:', err);
+      }
+    });
   }
 
   obtenerProductos(): void {
@@ -66,6 +75,15 @@ export class ProductosRecomendacionesComponent implements OnInit {
       error: (err) => console.error('Error al obtener productos', err)
     });
   }
+
+  // obtenerRecomendaciones(): void {
+  //   this.productosService.getRecomendaciones().subscribe({
+  //     next: (res) => {
+  //       this.recomendaciones = res.items;
+  //     },
+  //     error: (err) => console.error('Error al obtener recomendaciones', err)
+  //   });
+  // }
 
   verificarRol(): void {
     const user = this.authService.getUser();
@@ -186,24 +204,24 @@ export class ProductosRecomendacionesComponent implements OnInit {
   }
   
 
-  verRecomendaciones(nombre: string, categoria: string, marca: string): void {
-    const query = `${nombre} ${categoria} ${marca}`;
-    this.router.navigate(['customer/recomendaciones'], {
-      queryParams: { q: query }
-    });
-  }
+  // verRecomendaciones(nombre: string, categoria: string, marca: string): void {
+  //   const query = `${nombre} ${categoria} ${marca}`;
+  //   this.router.navigate(['customer/recomendaciones'], {
+  //     queryParams: { q: query }
+  //   });
+  // }
 
-  verRecomendacionPorTexto(): void {
-    if (!this.recomendacionTexto.trim()) {
-      this.noti.warn('Texto vacío', 'Ingresa una descripción para recomendar');
-      return;
-    }
+  // verRecomendacionPorTexto(): void {
+  //   if (!this.recomendacionTexto.trim()) {
+  //     this.noti.warn('Texto vacío', 'Ingresa una descripción para recomendar');
+  //     return;
+  //   }
   
-    const query = this.recomendacionTexto.trim();
-    this.router.navigate(['/customer/recomendaciones'], {
-      queryParams: { q: query }
-    });
-  }
+  //   const query = this.recomendacionTexto.trim();
+  //   this.router.navigate(['/customer/recomendaciones'], {
+  //     queryParams: { q: query }
+  //   });
+  // }
   
   
 }
