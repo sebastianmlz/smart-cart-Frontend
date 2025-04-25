@@ -17,11 +17,16 @@
   </div>
 
   <p-table 
-    [value]="products" 
-    [rows]="10" 
-    [paginator]="true" 
-    [rowHover]="true" 
-    dataKey="id"
+  [value]="products" 
+  [rows]="pageSize" 
+  [paginator]="true" 
+  [lazy]="true"
+  [totalRecords]="totalRecords" 
+  (onPage)="onPageChange($event)"
+  [loading]="loading"
+  [rowsPerPageOptions]="[5, 10, 20, 50]"
+  [first]="(currentPage-1) * pageSize"
+>
     
   >
     <ng-template pTemplate="caption">

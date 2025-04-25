@@ -46,10 +46,15 @@ export class ProductosService {
   //   return this.http.get<{ items: Product[] }>(`${this.baseUrl}?page=${page}&page_size=${pageSize}`, { headers });
   // }
 
-  obtenerProductos(): Observable<PaginatedResponse<Product>> {
+  obtenerProductos(page: number = 1, pageSize: number = 10): Observable<PaginatedResponse<Product>> {
     const token = localStorage.getItem('access');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<PaginatedResponse<Product>>(`${this.baseUrl}`, { headers });
+    
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('page_size', pageSize.toString());
+      
+    return this.http.get<PaginatedResponse<Product>>(`${this.baseUrl}`, { headers, params });
   }
 
   editarProducto(product_id: number, data: FormData): Observable<any> {

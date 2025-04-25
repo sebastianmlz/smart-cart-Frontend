@@ -20,6 +20,7 @@ import { CreateProduct } from '../../../models/create-product.model';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-table-products',
@@ -40,6 +41,7 @@ import { DropdownModule } from 'primeng/dropdown';
     DropdownModule,
     InputTextModule,
     ButtonModule,
+    PaginatorModule, // Añadido para la paginación
   ],
   templateUrl: './table-products.component.html',
   styleUrl: './table-products.component.css'
@@ -67,6 +69,15 @@ export class TableProductsComponent {
     stock: 0
   };
   nuevoProductoModalVisible = false;
+  
+  // Propiedades para paginación
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalRecords: number = 0;
+  totalPages: number = 0;
+  hasNextPage: boolean = false;
+  hasPrevPage: boolean = false;
+  loading: boolean = false;
 
   constructor(
     public productos: ProductosService,
@@ -75,14 +86,42 @@ export class TableProductsComponent {
   ) {}
 
   ngOnInit() {
-    this.cargarProductos();
+    this.cargarProductos(this.currentPage, this.pageSize);
     this.cargarFormOpciones();
   }
 
-  cargarProductos(): void {
-    this.productos.obtenerProductos().subscribe({
+  // Nuevo método para manejar el cambio de página
+  onPageChange(event: any): void {
+    // Si usas p-paginator de PrimeNG
+    if (event.page !== undefined) {
+      // PrimeNG paginator usa base 0 (primera página = 0)
+      this.currentPage = event.page + 1;
+      this.pageSize = event.rows;
+    } 
+    // Si usas p-table con paginación integrada
+    else if (event.first !== undefined) {
+      // Calcular página basado en first y rows
+      this.currentPage = Math.floor(event.first / event.rows) + 1;
+      this.pageSize = event.rows;
+    }
+    
+    console.log(`Cambiando a página ${this.currentPage}, tamaño: ${this.pageSize}`);
+    this.cargarProductos(this.currentPage, this.pageSize);
+  }
+
+  cargarProductos(page: number = 1, pageSize: number = 10): void {
+    this.loading = true;
+    this.productos.obtenerProductos(page, pageSize).subscribe({
       next: (res) => {
         this.products = res.items;
+        this.totalRecords = res.total;
+        this.currentPage = res.page;
+        this.pageSize = res.page_size;
+        this.totalPages = res.pages;
+        this.hasNextPage = res.has_next;
+        this.hasPrevPage = res.has_prev;
+        this.loading = false;
+        
         console.log("Productos con stock:", this.products);
         console.log("respuesta del backend:", res);
   
@@ -97,11 +136,13 @@ export class TableProductsComponent {
           }
         });
       },
-      error: (err) => console.error("Error al cargar productos", err),
+      error: (err) => {
+        console.error("Error al cargar productos", err);
+        this.loading = false;
+      },
     });
   }
   
-
   cargarFormOpciones(): void {
     this.productos.getBrands().subscribe({
       next: (res) => this.brands = res.items,
@@ -148,8 +189,6 @@ export class TableProductsComponent {
     }
   }
   
-  
-
   registrarProducto(): void {
     const formData = new FormData();
   
@@ -178,7 +217,7 @@ export class TableProductsComponent {
       next: () => {
         this.noti.success('Producto registrado', '¡Registro exitoso!');
         this.nuevoProductoModalVisible = false;
-        this.cargarProductos();
+        this.cargarProductos(this.currentPage, this.pageSize);
       },
       error: (err) => {
         console.error('Error al registrar producto', err);
@@ -187,15 +226,12 @@ export class TableProductsComponent {
     });
   }
   
-  
-  
-
   eliminarProducto(id: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       this.productos.eliminarProducto(id).subscribe({
         next: () => {
           this.noti.success('Producto eliminado', 'El producto fue eliminado correctamente');
-          this.cargarProductos();
+          this.cargarProductos(this.currentPage, this.pageSize);
         },
         error: (err) => {
           console.error('Error al eliminar el producto', err);
@@ -231,7 +267,6 @@ export class TableProductsComponent {
     this.editarProductoModalVisible = true;
   }
   
-
   onEditFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -241,7 +276,6 @@ export class TableProductsComponent {
     }
   }
   
-
   editarProducto(): void {
     const formData = new FormData();
     formData.append('name', this.productoEditable.name);
@@ -253,16 +287,15 @@ export class TableProductsComponent {
     formData.append('price_usd', this.productoEditable.price_usd.toString());
     formData.append('stock', this.productoEditable.stock.toString());
     formData.append('active', this.productoEditable.active ? 'true' : 'false');
-    if (this.productoEditable.image_url) formData.append('image_url', this.productoEditable.image_url);
-    // if (this.nuevoProducto.image_url) {
-    //   formData.append('image_url', this.nuevoProducto.image_url);
-    // }
+    if (this.productoEditable.image_url instanceof File) {
+      formData.append('image_url', this.productoEditable.image_url);
+    }
 
     this.productos.editarProducto(this.productoEditable.id, formData).subscribe({
       next: () => {
         this.noti.success('Producto actualizado', 'Los datos han sido actualizados correctamente');
         this.editarProductoModalVisible = false;
-        this.cargarProductos();
+        this.cargarProductos(this.currentPage, this.pageSize);
       },
       error: (err) => {
         console.error('Error al actualizar producto', err);
